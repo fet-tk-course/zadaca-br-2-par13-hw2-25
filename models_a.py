@@ -23,3 +23,13 @@ class Car(CarBase, table=True):
 class CarCreate(CarBase):
     pass
 
+# Shema za djelimično ažuriranje gdje su sva polja su opcionalna
+class CarUpdate(SQLModel):
+    model_name: Optional[str] = None
+    year: Optional[int] = None
+    price: Optional[float] = None
+    is_electric: Optional[bool] = None
+    mileage: Optional[int] = None
+    color: Optional[str] = None
+    description: Optional[str] = None
+    manufacturer_id: Optional[int] = None
