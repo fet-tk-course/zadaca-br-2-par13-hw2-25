@@ -38,3 +38,21 @@ def get_manufacturers(
         query = query.where(Manufacturer.is_active == is_active)
     manufacturers = session.exec(query).all()
     return manufacturers
+
+@router.put("/{manufacturer_id}", response_model=Manufacturer)
+def update_manufacturer(
+    manufacturer_id: int,
+    manufacturer_data: ManufacturerCreate,
+    session: Session = Depends(get_session)
+):
+    # Potpuno zamjenjuje podatke proizvođača sa novim podacima (PUT)
+    manufacturer = session.get(Manufacturer, manufacturer_id)
+    if not manufacturer:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Proizvođač nije pronađen")
+    manufacturer_dict = manufacturer_data.model_dump()
+    for key, value in manufacturer_dict.items():
+        setattr(manufacturer, key, value)
+    session.add(manufacturer)
+    session.commit()
+    session.refresh(manufacturer)
+    return manufacturer
