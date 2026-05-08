@@ -56,3 +56,21 @@ def update_manufacturer(
     session.commit()
     session.refresh(manufacturer)
     return manufacturer
+
+@router.patch("/{manufacturer_id}", response_model=Manufacturer)
+def partial_update_manufacturer(
+    manufacturer_id: int,
+    manufacturer_data: ManufacturerUpdate,
+    session: Session = Depends(get_session)
+):
+    # Djelimično ažurira proizvođača — mijenja samo ona polja koja su proslijeđena
+    manufacturer = session.get(Manufacturer, manufacturer_id)
+    if not manufacturer:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Proizvođač nije pronađen")
+    manufacturer_dict = manufacturer_data.model_dump(exclude_unset=True)
+    for key, value in manufacturer_dict.items():
+        setattr(manufacturer, key, value)
+    session.add(manufacturer)
+    session.commit()
+    session.refresh(manufacturer)
+    return manufacturer
