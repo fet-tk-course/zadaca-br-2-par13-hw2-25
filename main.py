@@ -11,7 +11,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Zadaća 2 - REST API",
+    title = "Zadaća 2 - REST API",
+    description = "REST API za upravljanje automobilima i proizvođačima u auto salonu"
     version="1.0.0",
     lifespan=lifespan
 )
