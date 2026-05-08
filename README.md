@@ -8,7 +8,7 @@
 ## Tim
 
 - **Student A**: [Ime Prezime] - resurs: `/resursi_a`
-- **Student B**: [Ime Prezime] - resurs: `/resursi_b`
+- **Student B**: Arslan Telarević - resurs: `/resursi_b`
 
 ## Instalacija i pokretanje
 
@@ -69,23 +69,30 @@ curl -X POST "http://localhost:8000/resursi_a" \
 
 ### Resurs B: `/resursi_b`
 
-[Analogno kao za Resurs A]
+| Metoda | Ruta | Opis |
+|--------|------|------|
+| GET | `/resursi_b` | Lista svih resursa (sa query filterom) |
+| GET | `/resursi_b/{id}` | Dohvatanje resursa po ID-u |
+| POST | `/resursi_b` | Kreiranje novog resursa |
+| PUT | `/resursi_b/{id}` | Potpuna zamjena resursa |
+| PATCH | `/resursi_b/{id}` | Djelimično ažuriranje resursa |
+| DELETE | `/resursi_b/{id}` | Brisanje resursa |
 
 ## Korištenje AI alata
 
 ### Alat: [GitHub Copilot / ChatGPT / ...]
-**Model:** [GPT-4, Copilot model, ...]
+**Model:** Gemini ,Claude(Sonnet 4.6)
 
 **Primjer 1:**
-- **Prompt:** [Npr. "Kreiraj SQLModel klasu za entitet Knjiga sa poljima naslov, autor, godina, isbn"]
-- **Kako je pomoglo:** [Opis]
-- **Prilagodbe:** [Da li ste morali prilagoditi generisani kod]
+- **Prompt:** "Kreiraj SQLModel klase za entitet Proizvođač automobila (Manufacturer) sa poljima za naziv, državu, godinu osnivanja, broj zaposlenih, prihod i web stranicu, uključujući Create i Update sheme."
+- **Kako je pomoglo:** Modeliranje podataka je ubrzano.
+- **Prilagodbe:** Morao sam ručno dodati Optional tipove i Field(default=None) za polje website. Također, zbog specifičnosti Python 3.12/3.14 okruženja, bilo je potrebno precizno definisati tipove podataka (anotacije) kako bi Pydantic ispravno prepoznao polja
 
 **Primjer 2:**
-- **Prompt:** [Npr. "Implementiraj PATCH endpoint sa exclude_unset=True"]
-- **Kako je pomoglo:** [Opis]
-- **Prilagodbe:** [Opis]
+- **Prompt:** "Implementiraj PATCH endpoint za djelimično ažuriranje proizvođača koristeći exclude_unset=True i objasni kako spriječiti prepisivanje postojećih podataka praznim vrijednostima."
+- **Kako je pomoglo:** Dobio sam precizan šablon za korištenje model_dump(exclude_unset=True) i setattr funkcije. Ovo mi je pomoglo da razumijem razliku između potpune zamjene resursa (PUT) i djelimične izmjene (PATCH)
+- **Prilagodbe:** Prvobitno je kod uključivao exclude_none=True, ali sam to uklonio jer bi to spriječilo korisnika da namjerno postavi neko polje (npr. website) na null. Također sam prilagodio poruke o greškama na bosanski jezik i dodao provjeru postojanja resursa (404 Not Found) prije procesiranja podataka.
 
 ## Napomene
 
-[Dodatne napomene specifične za vašu implementaciju]
+Upravljanje okruženjem i verzijama: Tokom implementacije utvrđeno je da verzija Python 3.14 (pre-release) uzrokuje greške u pydantic validaciji zbog promjena u načinu interpretacije tipova (anotacija). Problem je riješen migracijom na stabilnu verziju Python 3.11, što je osiguralo potpunu kompatibilnost sa SQLModel bibliotekom.
