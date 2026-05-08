@@ -23,3 +23,18 @@ def get_manufacturer(manufacturer_id: int, session: Session = Depends(get_sessio
     if not manufacturer:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Proizvođač nije pronađen")
     return manufacturer
+
+@router.get("/", response_model=List[Manufacturer])
+def get_manufacturers(
+    country: Optional[str] = Query(default=None, description="Filtriranje po državi porijekla"),
+    is_active: Optional[bool] = Query(default=None, description="Filtriranje po aktivnosti na tržištu"),
+    session: Session = Depends(get_session)
+):
+    # Dohvata listu svih proizvođača, sa opcionim filterima po državi i statusu
+    query = select(Manufacturer)
+    if country is not None:
+        query = query.where(Manufacturer.country == country)
+    if is_active is not None:
+        query = query.where(Manufacturer.is_active == is_active)
+    manufacturers = session.exec(query).all()
+    return manufacturers
