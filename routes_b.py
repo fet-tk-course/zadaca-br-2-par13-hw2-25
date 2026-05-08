@@ -74,3 +74,12 @@ def partial_update_manufacturer(
     session.commit()
     session.refresh(manufacturer)
     return manufacturer
+
+@router.delete("/{manufacturer_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_manufacturer(manufacturer_id: int, session: Session = Depends(get_session)):
+    # Briše proizvođača iz baze prema ID-u, vraća 204 bez sadržaja ako uspije
+    manufacturer = session.get(Manufacturer, manufacturer_id)
+    if not manufacturer:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Proizvođač nije pronađen")
+    session.delete(manufacturer)
+    session.commit()
