@@ -1,6 +1,25 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlmodel import Session, select
+from typing import Optional, List
 
 from database import get_session
+from models_b import Manufacturer, ManufacturerCreate, ManufacturerUpdate
 
 router = APIRouter(prefix="/resursi_b", tags=["Resurs B"])
+
+@router.post("/", response_model=Manufacturer, status_code=status.HTTP_201_CREATED)
+def create_manufacturer(manufacturer_data: ManufacturerCreate, session: Session = Depends(get_session)):
+    # Kreira novog proizvođača u bazi podataka i vraća kreirani objekat
+    manufacturer = Manufacturer.model_validate(manufacturer_data)
+    session.add(manufacturer)
+    session.commit()
+    session.refresh(manufacturer)
+    return manufacturer
+
+@router.get("/{manufacturer_id}", response_model=Manufacturer)
+def get_manufacturer(manufacturer_id: int, session: Session = Depends(get_session)):
+    # Dohvata jednog proizvođača prema ID-u, vraća 404 ako ne postoji
+    manufacturer = session.get(Manufacturer, manufacturer_id)
+    if not manufacturer:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Proizvođač nije pronađen")
+    return manufacturer
