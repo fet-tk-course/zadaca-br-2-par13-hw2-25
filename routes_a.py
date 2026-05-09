@@ -39,3 +39,40 @@ def create_car(car_data: CarCreate, session: Session = Depends(get_session)):
     session.commit()
     session.refresh(car)
     return car
+
+# Metoda koja se koristi za potpunu zamjenu stanja postojećeg resursa
+@router.put("/{car_id}", response_model=Car)
+def update_car(car_id: int, car_data: CarCreate, session: Session = Depends(get_session)):
+    car = session.get(Car, car_id)
+    if not car:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Automobil nije pronađen")
+    car_dict = car_data.model_dump()
+    for key, value in car_dict.items():
+        setattr(car, key, value)
+    session.add(car)
+    session.commit()
+    session.refresh(car)
+    return car
+
+# Metoda koja implementira parcijalne modifikacije
+@router.patch("/{car_id}", response_model=Car)
+def partial_update_car(car_id: int, car_data: CarUpdate, session: Session = Depends(get_session)):
+    car = session.get(Car, car_id)
+    if not car:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Automobil nije pronađen")
+    car_dict = car_data.model_dump(exclude_unset=True)
+    for key, value in car_dict.items():
+        setattr(car, key, value)
+    session.add(car)
+    session.commit()
+    session.refresh(car)
+    return car
+
+# Osigurava trajno uklanjanje resursa
+@router.delete("/{car_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_car(car_id: int, session: Session = Depends(get_session)):
+    car = session.get(Car, car_id)
+    if not car:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Automobil nije pronađen")
+    session.delete(car)
+    session.commit()
