@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
 from database import create_db_and_tables
+from routes_a import router as cars_router
+from routes_b import router as router_b
 
 
 @asynccontextmanager
@@ -11,12 +13,17 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Zadaća 2 - REST API",
+    title = "Zadaća 2 - REST API",
+    description = "REST API za upravljanje automobilima i proizvođačima u auto salonu",
     version="1.0.0",
     lifespan=lifespan
 )
+
+app.include_router(cars_router)
+app.include_router(router_b)
 
 
 @app.get("/")
 def read_root():
     return {"message": "Zadaća 2 - REST API"}
+
