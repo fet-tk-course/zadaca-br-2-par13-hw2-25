@@ -3,11 +3,11 @@
 
 ## O projektu
 
-[Ovdje ukratko opišite domenu vaše aplikacije i njenu svrhu]
+Ovo je REST API aplikacija za upravljanje auto salonom. Aplikacija omogućava vođenje evidencije o automobilima koji su na stanju, njihovim specifikacijama (godina, cijena, kilometraža, tip pogona), kao i praćenje informacija o proizvođačima automobila.
 
 ## Tim
 
-- **Student A**: [Ime Prezime] - resurs: `/resursi_a`
+- **Student A**: Tarik Jukan - resurs: `/cars`
 - **Student B**: [Ime Prezime] - resurs: `/resursi_b`
 
 ## Instalacija i pokretanje
@@ -48,23 +48,34 @@ uvicorn main:app --reload
 
 ## API Endpointi
 
-### Resurs A: `/resursi_a`
+### Resurs A: `/cars`
 
 | Metoda | Ruta | Opis |
 |--------|------|------|
-| GET | `/resursi_a` | Lista svih resursa (sa query filterom) |
-| GET | `/resursi_a/{id}` | Dohvatanje resursa po ID-u |
-| POST | `/resursi_a` | Kreiranje novog resursa |
-| PUT | `/resursi_a/{id}` | Potpuna zamjena resursa |
-| PATCH | `/resursi_a/{id}` | Djelimično ažuriranje resursa |
-| DELETE | `/resursi_a/{id}` | Brisanje resursa |
+| GET | `/cars` | Lista svih automobila (sa query filterima za godinu i električni pogon) |
+| GET | `/cars/{id}` | Dohvatanje specifičnog automobila po ID-u |
+| POST | `/cars` | Dodavanje novog automobila na stanje |
+| PUT | `/cars/{id}` | Potpuna zamjena podataka o automobilu |
+| PATCH | `/cars/{id}` | Djelimično ažuriranje podataka automobila |
+| DELETE | `/cars/{id}` | Brisanje automobila iz baze |
 
 **Primjer zahtjeva:**
 ```bash
-# Kreiranje novog resursa
-curl -X POST "http://localhost:8000/resursi_a" \
-  -H "Content-Type: application/json" \
-  -d '{"polje1": "vrijednost", "polje2": 123}'
+# Kreiranje novog automobila
+curl -X 'POST' \
+  '[http://127.0.0.1:8000/cars/](http://127.0.0.1:8000/cars/)' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "model_name": "Golf 8",
+  "year": 2021,
+  "price": 35000.0,
+  "is_electric": false,
+  "mileage": 45000,
+  "color": "siva",
+  "description": "Odlično stanje, prvi vlasnik",
+  "manufacturer_id": 1
+}'
 ```
 
 ### Resurs B: `/resursi_b`
@@ -73,7 +84,7 @@ curl -X POST "http://localhost:8000/resursi_a" \
 
 ## Korištenje AI alata
 
-### Alat: [GitHub Copilot / ChatGPT / ...]
+### Alat: Alat: Gemini
 **Model:** [GPT-4, Copilot model, ...]
 
 **Primjer 1:**
