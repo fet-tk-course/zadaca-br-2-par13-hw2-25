@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
-
+from pydentic import field_validator
 
 class ManufacturerBase(SQLModel):
     name: str
@@ -10,7 +10,20 @@ class ManufacturerBase(SQLModel):
     is_active: bool
     annual_revenue: float
     website: Optional[str] = None
+    
+    @field_validator('name')
+    @classmethod
+    def naziv_ne_smije_biti_prazan(cls, v):
+        if not v.strip():
+            raise ValueError('Naziv ne smije biti prazan string')
+        return v.strip()
 
+    @field_validator('employees')
+    @classmethod
+    def broj_zaposlenih_mora_biti_pozitivan(cls, v):
+        if v < 0:
+            raise ValueError('Broj zaposlenih ne može biti negativan')
+        return v
 
 class Manufacturer(ManufacturerBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
