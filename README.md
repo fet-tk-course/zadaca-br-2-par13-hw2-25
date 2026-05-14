@@ -93,6 +93,14 @@ curl -X POST "http://localhost:8000/resursi_a" \
 - **Kako je pomoglo:** Dobio sam precizan šablon za korištenje model_dump(exclude_unset=True) i setattr funkcije. Ovo mi je pomoglo da razumijem razliku između potpune zamjene resursa (PUT) i djelimične izmjene (PATCH)
 - **Prilagodbe:** Prvobitno je kod uključivao exclude_none=True, ali sam to uklonio jer bi to spriječilo korisnika da namjerno postavi neko polje (npr. website) na null. Također sam prilagodio poruke o greškama na bosanski jezik i dodao provjeru postojanja resursa (404 Not Found) prije procesiranja podataka.
 
+- 
+
 ## Napomene
 
 Upravljanje okruženjem i verzijama: Tokom implementacije utvrđeno je da verzija Python 3.14 (pre-release) uzrokuje greške u pydantic validaciji zbog promjena u načinu interpretacije tipova (anotacija). Problem je riješen migracijom na stabilnu verziju Python 3.11, što je osiguralo potpunu kompatibilnost sa SQLModel bibliotekom.
+
+
+Prvojera 2:
+u zad1 ,u modelsb dodane validation funckije koje provjeravaju da li u poslatom json formatu od strane korisnika sadrzi ime i employees u slucaju da nije uneseno iybacit ce greesku.
+isto u routes u post metodi dodana je funkcija koja provjerava da li unos od strane korisnika vec postoji .
+U zad2 nova get metoda ocekuje standardan ulaz od korisnika gdje se prije samog ulaska u funkciju provjerava da li je sve ispravno uneseno i pretvara se u pzdantic model.Ova metoda sta radi prebrojava po id sve u bayi dostupne proizvodjace i na kraju ispise.
