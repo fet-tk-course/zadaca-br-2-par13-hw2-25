@@ -9,6 +9,12 @@ router = APIRouter(prefix="/resursi_b", tags=["Resurs B"])
 
 @router.post("/", response_model=Manufacturer, status_code=status.HTTP_201_CREATED)
 def create_manufacturer(manufacturer_data: ManufacturerCreate, session: Session = Depends(get_session)):
+     postoji=session.exec(select(Manufacturer).where(Manufacturer.name==manufacturer_data.name)).first()
+
+    if postoji:
+       raise
+HTTPException(status_code=409,detail="Proizvođač već postoji")
+
     # Kreira novog proizvođača u bazi podataka i vraća kreirani objekat
     manufacturer = Manufacturer.model_validate(manufacturer_data)
     session.add(manufacturer)
