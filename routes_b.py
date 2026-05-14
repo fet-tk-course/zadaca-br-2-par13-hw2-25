@@ -21,6 +21,14 @@ HTTPException(status_code=409,detail="Proizvođač već postoji")
     session.commit()
     session.refresh(manufacturer)
     return manufacturer
+@router.get("/count", response_model=Manufacturer)
+def get_manufacturer(manufacturer_id: int, session: Session = Depends(get_session)):
+    # Dohvata jednog proizvođača prema ID-u, vraća 404 ako ne postoji
+    upit=select(func.count(Manufacturer.id))
+      ukupno=session.exec(upit).one()
+    return {
+         "ukupno_proizvodjaca":ukupno
+    }
 
 @router.get("/{manufacturer_id}", response_model=Manufacturer)
 def get_manufacturer(manufacturer_id: int, session: Session = Depends(get_session)):
