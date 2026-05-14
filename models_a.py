@@ -1,5 +1,7 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
+from pydantic import field_validator as validator
+
 
 # TODO: Student A - Definiši svoj SQLModel entitet ovdje
 # 
@@ -20,8 +22,26 @@ class Car(CarBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
 # CarCreate - koristi se za kreiranje novog automobila, nasljeđuje atribute iz CarBase
+
+
 class CarCreate(CarBase):
-    pass
+    @validator('model_name')
+    @classmethod
+    def model_name_not_empty(cls, v):
+        if not v or not v.strip():
+            raise ValueError('Naziv modela ne smije biti prazan')
+        if len(v.strip()) < 2:
+            raise ValueError('Naziv modela mora imati najmanje 2 znaka')
+        return v
+
+    @validator('price')
+    @classmethod
+    def price_must_be_positive(cls, v):
+        if v <= 0:
+            raise ValueError('Cijena mora biti pozitivan broj')
+        return v
+
+
 
 # Shema za djelimično ažuriranje gdje su sva polja su opcionalna
 class CarUpdate(SQLModel):
@@ -33,3 +53,4 @@ class CarUpdate(SQLModel):
     color: Optional[str] = None
     description: Optional[str] = None
     manufacturer_id: Optional[int] = None
+

@@ -107,3 +107,61 @@ curl -X 'POST' \
 ## Napomene
 
 Upravljanje okruženjem i verzijama: Tokom implementacije utvrđeno je da verzija Python 3.14 (pre-release) uzrokuje greške u pydantic validaciji zbog promjena u načinu interpretacije tipova (anotacija). Problem je riješen migracijom na stabilnu verziju Python 3.11, što je osiguralo potpunu kompatibilnost sa SQLModel bibliotekom.
+
+## Zadatak 3 – Dokumentacija projekta
+
+## Opis dodanog u Z1 i Z2
+Zadatak1: U model CarCreate dodani su Pydantic validatori za provjeru ispravnosti unosa. Uspostavljena je veza sa tabelom proizvođača. 
+Zadatak2: Rute i Logika U POST endpointu implementirana je provjera duplikata. Kreiran je i novi, nestandardni GET endpoint /cars/statistics koji računa globalnu statistiku automobila u salonu.
+
+
+## Opis promjena u modelu
+Dodani strani ključ: manufacturer_id unutar modela Car.
+Relacija: Strani ključ povezuje resurs Car sa resursom **Manufacturer (Proizvođač) preko polja manufacturer.id.
+
+
+## Opis validacijskih pravila i HTTP statusa
+Validacija naziva modela: Naziv ne smije biti prazan string i mora imati najmanje 2 znaka.
+Greška: Ukoliko pravilo nije ispunjeno, vraća se HTTP 422 Unprocessable Entity.
+Validacija cijene price Cijena automobila mora biti strogo veća od nule.
+Greška: Ukoliko je cijena nula ili negativna, vraća se HTTP 422 Unprocessable Entity.
+Provjera duplikata (POST): Sistem ne dozvoljava unos automobila sa identičnim nazivom modela i godinom proizvodnje.
+Greška Ako automobil već postoji, vraća se HTTP 409 Conflict.
+
+
+## Primjeri zahtjeva i očekivanih odgovora za nove endpointe
+
+## 1. POST /cars/ (Kreiranje novog automobila)
+Primjer zahtjeva (Body):
+    {
+      "model_name": "Golf 8",
+      "year": 2024,
+      "price": 25000.0,
+      "is_electric": false,
+      "mileage": 15000,
+      "color": "Crna",
+      "description": "Odlično stanje",
+      "manufacturer_id": 1
+    }
+Očekivani odgovor:
+    {
+      "id": 1,
+      "model_name": "Golf 8",
+      "year": 2024,
+      "price": 25000.0,
+      "is_electric": false,
+      "mileage": 15000,
+      "color": "Crna",
+      "description": "Odlično stanje",
+      "manufacturer_id": 1
+    }
+
+
+# 2. GET /cars/statistics 
+Primjer zahtjeva:GET http://localhost:8000/cars/statistics
+Očekivani odgovor (HTTP 200 OK):
+    {
+      "ukupno_automobila": 2,
+      "prosjecna_cijena": 23500.0,
+      "prosjecna_kilometraza": 18500.0
+    }
